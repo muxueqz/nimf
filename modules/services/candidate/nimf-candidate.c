@@ -567,7 +567,7 @@ nimf_candidate_start (NimfService *service)
                     (GCallback) on_tree_view_row_activated, candidate);
   /* column */
   renderer = gtk_cell_renderer_text_new ();
-  g_object_set (renderer, "height", fixed_height, "font", "Sans 14", NULL);
+  g_object_set (renderer, "height", fixed_height, "font", "Sans 12", NULL);
 
   column[INDEX_COLUMN] = gtk_tree_view_column_new_with_attributes ("Index",
                                         renderer, "text", INDEX_COLUMN, NULL);
