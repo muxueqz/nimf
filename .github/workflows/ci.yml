@@ -56,8 +56,34 @@ jobs:
           name: debian-package-ubuntu2204
           path: debian/artifacts-ubuntu2204/*.deb
 
+  build-debian-testing:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Build Debian Package
+        uses: jtdor/build-deb-action@v1
+        env:
+          DEB_BUILD_OPTIONS: noautodbgsym
+        with:
+          docker-image: debian:testing
+          buildpackage-opts: -us -uc
+          before-build-hook: apt-get install -y devscripts equivs && mk-build-deps --install --remove debian/control && debchange --controlmaint --local="+ci${{ github.run_id }}~ubuntu2204~git$(git rev-parse --short HEAD)" "CI build"
+          extra-build-deps: devscripts git equivs debhelper build-essential
+          host-arch: amd64
+          artifacts-dir: debian/artifacts-debian-testing
+
+      - name: Upload Debian Package
+        uses: actions/upload-artifact@v2
+        with:
+          name: debian-package-debian-testing
+          path: debian/artifacts-debian-testing/*.deb
+
   release:
-    needs: [build-ubuntu-2404, build-ubuntu-2204]
+    # needs: [build-ubuntu-2404, build-ubuntu-2204]
+    needs: [build-debian-testing]
     runs-on: ubuntu-latest
 
     steps:
