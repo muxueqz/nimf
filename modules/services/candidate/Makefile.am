@@ -1,6 +1,9 @@
 moduledir = $(libdir)/nimf/modules/services
 module_LTLIBRARIES = libnimf-candidate.la
 
+gsettings_SCHEMAS = org.nimf.services.candidate.gschema.xml
+@GSETTINGS_RULES@
+
 libnimf_candidate_la_SOURCES = \
 	nimf-candidate.c \
 	$(NULL)

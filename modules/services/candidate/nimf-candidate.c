@@ -52,6 +52,8 @@ struct _NimfCandidate
   GtkWidget     *treeview;
   GtkWidget     *scrollbar;
   gint           cell_height;
+  GSettings        *settings;
+  gchar font;
 };
 
 GType nimf_candidate_get_type (void) G_GNUC_CONST;
@@ -567,7 +569,7 @@ nimf_candidate_start (NimfService *service)
                     (GCallback) on_tree_view_row_activated, candidate);
   /* column */
   renderer = gtk_cell_renderer_text_new ();
-  g_object_set (renderer, "height", fixed_height, "font", "Sans 12", NULL);
+  g_object_set (renderer, "height", fixed_height, "font", candidate->font, NULL);
 
   column[INDEX_COLUMN] = gtk_tree_view_column_new_with_attributes ("Index",
                                         renderer, "text", INDEX_COLUMN, NULL);
@@ -647,6 +649,9 @@ nimf_candidate_init (NimfCandidate *candidate)
   g_debug (G_STRLOC ": %s", G_STRFUNC);
 
   candidate->id = g_strdup ("nimf-candidate");
+  candidate->settings  = g_settings_new ("org.nimf.services.candidate");
+  candidate->font=
+    g_settings_get_string(candidate->settings, "font");
 }
 
 static void
