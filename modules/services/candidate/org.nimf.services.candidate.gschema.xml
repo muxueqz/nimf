@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.nimf.services.candidate"
+          path="/org/nimf/services/candidate/" gettext-domain="nimf">
+    <key type="s" name="hidden-schema-name">
+      <default l10n="messages">'Candidate'</default>
+      <summary>schema name for nimf-settings</summary>
+      <description>This key is intended for nimf-settings.</description>
+    </key>
+    <key type="s" name="font">
+      <default>'Sans 12'</default>
+      <summary>Font</summary>
+      <description>Font</description>
+    </key>
+  </schema>
+</schemalist>

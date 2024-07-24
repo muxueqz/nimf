@@ -23,6 +23,8 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include "nimf.h"
+#include <string.h>
+#include <stdlib.h>
 
 #define NIMF_TYPE_CANDIDATE             (nimf_candidate_get_type ())
 #define NIMF_CANDIDATE(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), NIMF_TYPE_CANDIDATE, NimfCandidate))
@@ -53,7 +55,8 @@ struct _NimfCandidate
   GtkWidget     *scrollbar;
   gint           cell_height;
   GSettings        *settings;
-  gchar font;
+  gchar *font;
+  gint font_size;
 };
 
 GType nimf_candidate_get_type (void) G_GNUC_CONST;
@@ -65,6 +68,14 @@ enum
   EXTRA_COLUMN,
   N_COLUMNS
 };
+
+int extract_font_size(const char *font_desc) {
+    const char *size_str = strrchr(font_desc, ' ');
+    if (size_str) {
+        return atoi(size_str + 1);
+    }
+    return 12;
+}
 
 static void
 nimf_candidate_show (NimfCandidatable *candidatable,
@@ -569,7 +580,7 @@ nimf_candidate_start (NimfService *service)
                     (GCallback) on_tree_view_row_activated, candidate);
   /* column */
   renderer = gtk_cell_renderer_text_new ();
-  g_object_set (renderer, "height", fixed_height, "font", candidate->font, NULL);
+  g_object_set (renderer, "height", candidate->font_size, "font", candidate->font, NULL);
 
   column[INDEX_COLUMN] = gtk_tree_view_column_new_with_attributes ("Index",
                                         renderer, "text", INDEX_COLUMN, NULL);
@@ -650,8 +661,10 @@ nimf_candidate_init (NimfCandidate *candidate)
 
   candidate->id = g_strdup ("nimf-candidate");
   candidate->settings  = g_settings_new ("org.nimf.services.candidate");
-  candidate->font=
-    g_settings_get_string(candidate->settings, "font");
+  // char* font = g_settings_get_string(candidate->settings, "font");
+  // candidate->font = font;
+  candidate->font = g_settings_get_string(candidate->settings, "font");
+  candidate->font_size = extract_font_size(candidate->font) * 3.5;
 }
 
 static void
